@@ -4,9 +4,10 @@ import {
   PRODUCTS,
   SCENES,
   STATS,
-  type Product,
 } from "../data/showroom";
+import { downloadProductSheet, track } from "../lib/services";
 import { useCountUp, useInView } from "../lib/hooks";
+import ProductDrawing from "./ProductDrawing";
 import Reveal from "./Reveal";
 import {
   IconArrowRight,
@@ -18,6 +19,12 @@ import {
   IconPin,
   IconWhatsApp,
 } from "./icons";
+
+const blueprintBg: React.CSSProperties = {
+  backgroundImage:
+    "linear-gradient(rgba(237,234,226,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(237,234,226,0.05) 1px, transparent 1px)",
+  backgroundSize: "26px 26px",
+};
 
 /* ------------------------------ marquee ----------------------------- */
 
@@ -50,9 +57,13 @@ export function Marquee() {
 
 const CARD_SPANS = ["lg:col-span-7", "lg:col-span-5", "lg:col-span-5", "lg:col-span-7"];
 
-export function LineupSection({ onFocusProduct }: { onFocusProduct: (id: string) => void }) {
+export function LineupSection({
+  onFocusProduct,
+}: {
+  onFocusProduct: (id: string) => void;
+}) {
   return (
-    <section id="linhas" className="mx-auto max-w-6xl scroll-mt-10 px-5 py-20 md:px-8 md:py-28">
+    <section id="linhas" aria-labelledby="linhas-titulo" className="mx-auto max-w-6xl scroll-mt-10 px-5 py-20 md:px-8 md:py-28">
       <Reveal>
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div>
@@ -60,15 +71,15 @@ export function LineupSection({ onFocusProduct }: { onFocusProduct: (id: string)
               <span className="h-px w-10 bg-bronze-400" />
               Cat&aacute;logo em cena
             </p>
-            <h2 className="font-display mt-4 text-5xl font-black uppercase leading-[0.88] text-paper md:text-7xl">
+            <h2 id="linhas-titulo" className="font-display mt-4 text-5xl font-black uppercase leading-[0.88] text-paper md:text-7xl">
               Quatro linhas,
               <br />
               <span className="text-bronze-400">um &uacute;nico padr&atilde;o.</span>
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-paper-dim">
-            Todas as linhas abaixo est&atilde;o montadas nos ambientes 360&deg;. Clique em
-            &ldquo;ver no showroom&rdquo; e a c&acirc;mera leva voc&ecirc; at&eacute; ela.
+            Todas as linhas abaixo est&atilde;o montadas nos ambientes 360&deg;. Baixe a ficha
+            t&eacute;cnica em PDF ou clique para a c&acirc;mera levar voc&ecirc; at&eacute; ela.
           </p>
         </div>
       </Reveal>
@@ -76,28 +87,40 @@ export function LineupSection({ onFocusProduct }: { onFocusProduct: (id: string)
       <div className="mt-12 grid grid-cols-1 gap-5 md:mt-16 lg:grid-cols-12">
         {PRODUCTS.map((p, i) => (
           <Reveal key={p.id} delay={i * 80} className={`${CARD_SPANS[i] ?? "lg:col-span-6"}`}>
-            <article className="group relative h-full overflow-hidden border border-line bg-ink-800 transition-colors duration-300 hover:border-bronze-600/50">
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={p.image}
-                  alt={p.name}
-                  loading="lazy"
-                  className="h-full w-full object-cover motion-safe:animate-kenburns"
+            <article className="group relative flex h-full flex-col overflow-hidden border border-line bg-ink-800 transition-colors duration-300 hover:border-bronze-600/50">
+              {/* desenho técnico no lugar de foto */}
+              <div
+                className="relative aspect-[4/3] overflow-hidden bg-ink-950"
+                style={blueprintBg}
+              >
+                <ProductDrawing
+                  kind={p.drawing}
+                  className="h-full w-full p-5 transition-transform duration-700 ease-out group-hover:scale-[1.06] motion-reduce:transition-none"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/20 to-transparent" />
-                <span className="font-display absolute left-5 top-4 text-4xl font-black text-paper/25">
+                <span className="font-display absolute left-5 top-4 text-4xl font-black text-paper/20" aria-hidden="true">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => onFocusProduct(p.id)}
-                  aria-label={`Ver ${p.name} no showroom`}
-                  className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full border border-paper/25 bg-ink-950/50 text-paper backdrop-blur-sm transition-all duration-300 hover:border-bronze-400 hover:bg-bronze-500 hover:text-ink-950"
-                >
-                  <IconArrowUpRight className="text-lg" />
-                </button>
+                <div className="absolute right-4 top-4 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => downloadProductSheet(p)}
+                    aria-label={`Baixar ficha técnica de ${p.name} em PDF`}
+                    className="rounded-full border border-paper/20 bg-ink-950/60 px-3.5 py-2 font-hud text-[9px] uppercase tracking-[0.16em] text-paper backdrop-blur-sm transition-colors duration-200 hover:border-bronze-400 hover:text-bronze-300"
+                  >
+                    Ficha PDF
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onFocusProduct(p.id)}
+                    aria-label={`Ver ${p.name} no showroom 360`}
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-paper/20 bg-ink-950/60 text-paper backdrop-blur-sm transition-colors duration-200 hover:border-bronze-400 hover:bg-bronze-500 hover:text-ink-950"
+                  >
+                    <IconArrowUpRight className="text-base" />
+                  </button>
+                </div>
               </div>
-              <div className="relative -mt-14 px-6 pb-6 md:px-8 md:pb-7">
+
+              <div className="flex flex-1 flex-col px-6 pb-6 pt-5 md:px-8 md:pb-7">
                 <p className="font-hud text-[10px] uppercase tracking-[0.3em] text-bronze-300">
                   {p.line}
                 </p>
@@ -106,19 +129,21 @@ export function LineupSection({ onFocusProduct }: { onFocusProduct: (id: string)
                 </h3>
                 <p className="mt-2 text-sm text-paper-dim">{p.tagline}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {p.specs.slice(0, 3).map((s) => (
-                    <span
-                      key={s.label}
-                      className="rounded-full border border-line px-3 py-1 font-hud text-[10px] uppercase tracking-wider text-paper/70"
-                    >
-                      {s.label} &middot; {s.value}
-                    </span>
-                  ))}
+                  {[p.sheet.dimensions[0], p.sheet.dimensions[1], p.sheet.performance[0]]
+                    .filter(Boolean)
+                    .map((s) => (
+                      <span
+                        key={s.label}
+                        className="rounded-full border border-line px-3 py-1 font-hud text-[10px] uppercase tracking-wider text-paper/70"
+                      >
+                        {s.label} &middot; {s.value}
+                      </span>
+                    ))}
                 </div>
                 <button
                   type="button"
                   onClick={() => onFocusProduct(p.id)}
-                  className="mt-5 inline-flex items-center gap-2.5 font-hud text-[11px] uppercase tracking-[0.24em] text-bronze-300 transition-colors duration-200 hover:text-bronze-200"
+                  className="mt-auto inline-flex items-center gap-2.5 pt-5 font-hud text-[11px] uppercase tracking-[0.24em] text-bronze-300 transition-colors duration-200 hover:text-bronze-200"
                 >
                   Ver no showroom 360&deg;
                   <IconArrowRight className="transition-transform duration-200 group-hover:translate-x-1" />
@@ -136,7 +161,7 @@ export function LineupSection({ onFocusProduct }: { onFocusProduct: (id: string)
 
 export function AmbientesSection({ onEnterScene }: { onEnterScene: (id: string) => void }) {
   return (
-    <section id="ambientes" className="scroll-mt-10 border-t border-line bg-ink-900/60">
+    <section id="ambientes" aria-labelledby="ambientes-titulo" className="scroll-mt-10 border-t border-line bg-ink-900/60">
       <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
         <Reveal>
           <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
@@ -145,7 +170,7 @@ export function AmbientesSection({ onEnterScene }: { onEnterScene: (id: string) 
                 <span className="h-px w-10 bg-bronze-400" />
                 Tour completo
               </p>
-              <h2 className="font-display mt-4 text-5xl font-black uppercase leading-[0.88] text-paper md:text-7xl">
+              <h2 id="ambientes-titulo" className="font-display mt-4 text-5xl font-black uppercase leading-[0.88] text-paper md:text-7xl">
                 Tr&ecirc;s ambientes,
                 <br />
                 <span className="text-bronze-400">zero filas.</span>
@@ -163,15 +188,19 @@ export function AmbientesSection({ onEnterScene }: { onEnterScene: (id: string) 
             <Reveal key={s.id} delay={i * 90}>
               <button
                 type="button"
-                onClick={() => onEnterScene(s.id)}
+                onClick={() => {
+                  track("scene_card_click", { scene_id: s.id });
+                  onEnterScene(s.id);
+                }}
                 className="group block w-full overflow-hidden border border-line bg-ink-800 text-left transition-colors duration-300 hover:border-bronze-600/50"
               >
                 <div className="relative h-56 overflow-hidden">
                   <img
                     src={s.pano}
-                    alt={`Ambiente ${s.name}`}
+                    alt={`Vista do ambiente ${s.name} em 360 graus`}
                     loading="lazy"
-                    className="h-full w-full scale-110 object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-125"
+                    decoding="async"
+                    className="h-full w-full scale-110 object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-125 motion-reduce:transition-none"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-transparent to-ink-950/30" />
                   <span className="font-hud absolute left-4 top-4 rounded-full border border-line bg-ink-950/70 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-bronze-300 backdrop-blur-sm">
@@ -262,14 +291,14 @@ export function StatsSection() {
 
 export function VisitSection({ onQuote }: { onQuote: () => void }) {
   return (
-    <section id="visita" className="mx-auto max-w-6xl scroll-mt-10 px-5 py-20 md:px-8 md:py-28">
+    <section id="visita" aria-labelledby="visita-titulo" className="mx-auto max-w-6xl scroll-mt-10 px-5 py-20 md:px-8 md:py-28">
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
         <Reveal>
           <p className="flex items-center gap-3 font-hud text-[10px] uppercase tracking-[0.32em] text-bronze-300 md:text-[11px]">
             <span className="h-px w-10 bg-bronze-400" />
             Visita presencial
           </p>
-          <h2 className="font-display mt-4 text-5xl font-black uppercase leading-[0.88] text-paper md:text-6xl">
+          <h2 id="visita-titulo" className="font-display mt-4 text-5xl font-black uppercase leading-[0.88] text-paper md:text-6xl">
             Prefere tocar
             <br />
             <span className="text-bronze-400">no alum&iacute;nio?</span>
@@ -282,7 +311,7 @@ export function VisitSection({ onQuote }: { onQuote: () => void }) {
 
           <div className="mt-8 divide-y divide-line border-y border-line">
             <div className="flex items-start gap-4 py-5">
-              <IconPin className="mt-0.5 shrink-0 text-xl text-bronze-400" />
+              <IconPin className="mt-0.5 shrink-0 text-xl text-bronze-400" aria-hidden="true" />
               <div>
                 <p className="font-hud text-[10px] uppercase tracking-[0.28em] text-paper-dim">
                   Endere&ccedil;o
@@ -291,7 +320,7 @@ export function VisitSection({ onQuote }: { onQuote: () => void }) {
               </div>
             </div>
             <div className="flex items-start gap-4 py-5">
-              <IconClock className="mt-0.5 shrink-0 text-xl text-bronze-400" />
+              <IconClock className="mt-0.5 shrink-0 text-xl text-bronze-400" aria-hidden="true" />
               <div>
                 <p className="font-hud text-[10px] uppercase tracking-[0.28em] text-paper-dim">
                   Hor&aacute;rios
@@ -301,7 +330,7 @@ export function VisitSection({ onQuote }: { onQuote: () => void }) {
               </div>
             </div>
             <div className="flex items-start gap-4 py-5">
-              <IconPhone className="mt-0.5 shrink-0 text-xl text-bronze-400" />
+              <IconPhone className="mt-0.5 shrink-0 text-xl text-bronze-400" aria-hidden="true" />
               <div>
                 <p className="font-hud text-[10px] uppercase tracking-[0.28em] text-paper-dim">
                   Telefone / WhatsApp
@@ -311,7 +340,7 @@ export function VisitSection({ onQuote }: { onQuote: () => void }) {
               </div>
             </div>
             <div className="flex items-start gap-4 py-5">
-              <IconMail className="mt-0.5 shrink-0 text-xl text-bronze-400" />
+              <IconMail className="mt-0.5 shrink-0 text-xl text-bronze-400" aria-hidden="true" />
               <div>
                 <p className="font-hud text-[10px] uppercase tracking-[0.28em] text-paper-dim">
                   E-mail
@@ -328,7 +357,7 @@ export function VisitSection({ onQuote }: { onQuote: () => void }) {
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2.5 rounded-full bg-bronze-500 px-7 py-3.5 font-hud text-[11px] uppercase tracking-[0.22em] text-ink-950 transition-colors duration-200 hover:bg-bronze-400"
             >
-              <IconWhatsApp className="text-base" />
+              <IconWhatsApp className="text-base" aria-hidden="true" />
               Chamar no WhatsApp
             </a>
             <button
@@ -358,12 +387,7 @@ export function VisitSection({ onQuote }: { onQuote: () => void }) {
                 ))}
               </g>
               <path d="M-20 310 L420 110" stroke="#273036" strokeWidth="16" />
-              <path
-                d="M265 -20 C 245 120, 330 240, 305 420"
-                stroke="#1d2429"
-                strokeWidth="30"
-                fill="none"
-              />
+              <path d="M265 -20 C 245 120, 330 240, 305 420" stroke="#1d2429" strokeWidth="30" fill="none" />
               <path
                 d="M40 370 L130 280 L185 255 L199 208"
                 stroke="#cd914b"
@@ -375,7 +399,7 @@ export function VisitSection({ onQuote }: { onQuote: () => void }) {
             </svg>
 
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-              <span className="animate-pin absolute -inset-5 rounded-full border border-bronze-400/70" />
+              <span className="animate-pin absolute -inset-5 rounded-full border border-bronze-400/70" aria-hidden="true" />
               <span className="relative block h-5 w-5 rounded-full border-2 border-ink-950 bg-bronze-500 shadow-[0_0_30px_rgba(205,145,75,0.6)]" />
             </div>
 
@@ -413,36 +437,37 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 pb-12 pt-8 md:grid-cols-4 md:px-8">
         <div className="md:col-span-2">
           <div className="flex items-center gap-3 text-paper">
-            <IconLogo className="text-[24px] text-bronze-400" />
+            <IconLogo className="text-[24px] text-bronze-400" aria-hidden="true" />
             <p className="font-display text-lg font-extrabold uppercase tracking-[0.14em]">Alumia</p>
           </div>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-paper-dim">
             Esquadrias de alum&iacute;nio projetadas e fabricadas no Brasil, com engenharia de
-            vedação japonesa e acabamento para durar três décadas de sol e maresia.
+            veda&ccedil;&atilde;o japonesa e acabamento para durar tr&ecirc;s d&eacute;cadas de sol
+            e maresia.
           </p>
           <div className="mt-5 flex gap-2.5">
             <a
               href={CONTACT.whatsappUrl}
               target="_blank"
               rel="noreferrer"
-              aria-label="WhatsApp"
+              aria-label="Falar com a ALUMIA no WhatsApp"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-paper-dim transition-colors duration-200 hover:border-bronze-400 hover:text-bronze-300"
             >
-              <IconWhatsApp className="text-base" />
+              <IconWhatsApp className="text-base" aria-hidden="true" />
             </a>
             <a
               href={`mailto:${CONTACT.email}`}
-              aria-label="E-mail"
+              aria-label="Enviar e-mail para a ALUMIA"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-paper-dim transition-colors duration-200 hover:border-bronze-400 hover:text-bronze-300"
             >
-              <IconMail className="text-base" />
+              <IconMail className="text-base" aria-hidden="true" />
             </a>
             <a
               href={`tel:${CONTACT.phone.replace(/[^+\d]/g, "")}`}
-              aria-label="Telefone"
+              aria-label="Ligar para a ALUMIA"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-paper-dim transition-colors duration-200 hover:border-bronze-400 hover:text-bronze-300"
             >
-              <IconPhone className="text-base" />
+              <IconPhone className="text-base" aria-hidden="true" />
             </a>
           </div>
         </div>

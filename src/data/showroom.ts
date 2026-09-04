@@ -1,10 +1,20 @@
 /* ------------------------------------------------------------------ */
 /*  ALUMIA — dados do showroom virtual 360°                            */
+/*  v2: fichas técnicas completas + panoramas com luz neutra           */
 /* ------------------------------------------------------------------ */
 
-export interface ProductSpec {
+export type DrawingKind = "slide" | "pivot" | "awning" | "facade";
+
+export interface SpecRow {
   label: string;
   value: string;
+}
+
+export interface TechSheet {
+  dimensions: SpecRow[];
+  materials: SpecRow[];
+  accessories: SpecRow[];
+  performance: SpecRow[];
 }
 
 export interface ProductColor {
@@ -18,8 +28,8 @@ export interface Product {
   line: string;
   tagline: string;
   description: string;
-  image: string;
-  specs: ProductSpec[];
+  drawing: DrawingKind;
+  sheet: TechSheet;
   colors: ProductColor[];
 }
 
@@ -44,25 +54,16 @@ export interface Scene {
   hotspots: Hotspot[];
 }
 
-/* ----------------------------- imagens ----------------------------- */
+/* --------------------- panoramas (luz neutra) ---------------------- */
 
 export const PANO_LIVING =
-  "https://image.qwenlm.ai/generated-images/c10053c5-2d27-4f6c-bc08-f625af1212b4/_result.png";
+  "https://image.qwenlm.ai/generated-images/7a0c2ae6-a204-4166-a827-e00872d2f284/_result.png";
 export const PANO_GALLERY =
-  "https://image.qwenlm.ai/generated-images/fb3c3c8b-6eba-4e37-a04c-8258e7f4919c/_result.png";
+  "https://image.qwenlm.ai/generated-images/2664b7bb-2cc7-47ec-93cf-72a757972945/_result.png";
 export const PANO_OFFICE =
-  "https://image.qwenlm.ai/generated-images/1522b42f-bd9a-4121-ba43-c04b8d25423e/_result.png";
+  "https://image.qwenlm.ai/generated-images/a0e274c0-4c65-495b-b80d-9e301f636519/_result.png";
 
-export const IMG_PRIME_SLIDE =
-  "https://image.qwenlm.ai/generated-images/cb563cd8-f09c-4520-9cd9-0113de34820e/_result.png";
-export const IMG_PIVOT_AXIS =
-  "https://image.qwenlm.ai/generated-images/69eb65a4-8646-43d1-a833-e8e12520004c/_result.png";
-export const IMG_MAXIM_AIR =
-  "https://image.qwenlm.ai/generated-images/9b09e500-9ea1-4947-9a62-447201ff628d/_result.png";
-export const IMG_GLAZE_FACADE =
-  "https://image.qwenlm.ai/generated-images/6ce94592-f04e-476d-8ac7-9b59861d3e64/_result.png";
-
-/* ----------------------------- produtos ---------------------------- */
+/* --------------------- fichas técnicas (produtos) ------------------- */
 
 export const PRODUCTS: Product[] = [
   {
@@ -71,16 +72,40 @@ export const PRODUCTS: Product[] = [
     line: "Linha Sliding",
     tagline: "Vão livre de até 6 metros com perfis de apenas 62 mm.",
     description:
-      "A correr minimalista que desaparece na arquitetura. Rolamentos duplos de deslizamento silencioso, trilho inferior embutido no piso e encontro central de 22 mm que praticamente some entre os vidros. Pensada para integrar living, varanda e jardim num único plano de luz.",
-    image: IMG_PRIME_SLIDE,
-    specs: [
-      { label: "Vão máximo", value: "6,00 m" },
-      { label: "Largura do perfil", value: "62 mm" },
-      { label: "Vidro (simples / duplo)", value: "8 – 28 mm" },
-      { label: "Peso máximo por folha", value: "160 kg" },
-      { label: "Estanqueidade", value: "Classe A5" },
-      { label: "Pintura", value: "Eletrostática Qualicoat" },
-    ],
+      "A correr minimalista que desaparece na arquitetura. Rolamentos duplos de deslizamento silencioso, trilho inferior embutido no piso e encontro central de 22 mm que praticamente some entre os vidros.",
+    drawing: "slide",
+    sheet: {
+      dimensions: [
+        { label: "Vão máximo", value: "6.000 mm" },
+        { label: "Altura máxima da folha", value: "3.000 mm" },
+        { label: "Largura da folha", value: "800 – 3.000 mm" },
+        { label: "Largura do perfil", value: "62 mm" },
+        { label: "Vidro (simples / duplo)", value: "8 – 28 mm" },
+        { label: "Trilho inferior", value: "Embutido, 40 mm" },
+      ],
+      materials: [
+        { label: "Perfil", value: "Alumínio liga 6063-T5" },
+        { label: "Pintura", value: "Pó poliéster Qualicoat Classe 2" },
+        { label: "Roldanas", value: "Duplas, nylon + aço inox" },
+        { label: "Trilho de rodagem", value: "Aço inox AISI 316" },
+        { label: "Peso máximo por folha", value: "160 kg" },
+      ],
+      accessories: [
+        { label: "Fechadura", value: "Multiponto com chave" },
+        { label: "Puxador", value: "Embutido, alumínio maciço" },
+        { label: "Vedação", value: "Escova dupla + EPDM" },
+        { label: "Segurança infantil", value: "Trava opcional" },
+        { label: "Fechamento", value: "Amortecedor soft-close" },
+      ],
+      performance: [
+        { label: "Estanqueidade à água", value: "Classe A5" },
+        { label: "Resistência ao vento", value: "2.400 Pa" },
+        { label: "Isolamento acústico", value: "Rw 38 dB" },
+        { label: "Transmitância térmica", value: "U 2,1 W/m²K" },
+        { label: "Ciclos testados", value: "100.000 aberturas" },
+        { label: "Garantia", value: "10 anos" },
+      ],
+    },
     colors: [
       { name: "Preto Ônix", hex: "#17181a" },
       { name: "Bronze Outonal", hex: "#7a5a3a" },
@@ -94,16 +119,38 @@ export const PRODUCTS: Product[] = [
     line: "Linha Entry",
     tagline: "Porta pivotante de 120 cm com eixo totalmente oculto.",
     description:
-      "Uma entrada monumental que gira sobre o próprio peso. O eixo pivotante embutido permite folhas de até 3,2 m de altura com abertura suave de um toque, núcleo termoisolante e opção de fechadura biométrica integrada ao puxador em alumínio maciço.",
-    image: IMG_PIVOT_AXIS,
-    specs: [
-      { label: "Largura da folha", value: "120 cm" },
-      { label: "Altura máxima", value: "3,20 m" },
-      { label: "Eixo", value: "Pivotante oculto" },
-      { label: "Núcleo", value: "Termoisolante" },
-      { label: "Fechadura", value: "Biométrica opcional" },
-      { label: "Garantia", value: "10 anos" },
-    ],
+      "Uma entrada monumental que gira sobre o próprio peso. Eixo embutido com mola hidráulica de piso, núcleo termoisolante e fechadura biométrica opcional integrada ao puxador maciço.",
+    drawing: "pivot",
+    sheet: {
+      dimensions: [
+        { label: "Largura da folha", value: "1.200 mm" },
+        { label: "Altura máxima", value: "3.200 mm" },
+        { label: "Espessura da folha", value: "82 mm" },
+        { label: "Offset do eixo", value: "180 mm" },
+        { label: "Vão de passagem", value: "1.020 mm" },
+      ],
+      materials: [
+        { label: "Perfil", value: "Alumínio extrudado 6060-T66" },
+        { label: "Núcleo", value: "Poliuretano termoisolante" },
+        { label: "Acabamento", value: "Anodizado 20 mícrons" },
+        { label: "Soleira", value: "Aço inox escovado" },
+        { label: "Revestimento", value: "Chapa 3 mm texturizada" },
+      ],
+      accessories: [
+        { label: "Puxador", value: "Maciço 800 mm" },
+        { label: "Fechadura", value: "Biométrica opcional" },
+        { label: "Mola", value: "Hidráulica de piso" },
+        { label: "Visor", value: "Olho mágico digital" },
+        { label: "Batente", value: "Magnético oculto" },
+      ],
+      performance: [
+        { label: "Transmitância térmica", value: "U 1,4 W/m²K" },
+        { label: "Isolamento acústico", value: "Rw 42 dB" },
+        { label: "Segurança antiefração", value: "Classe RC3" },
+        { label: "Esforço de abertura", value: "< 30 N" },
+        { label: "Garantia", value: "10 anos" },
+      ],
+    },
     colors: [
       { name: "Bronze Outonal", hex: "#7a5a3a" },
       { name: "Preto Ônix", hex: "#17181a" },
@@ -117,16 +164,37 @@ export const PRODUCTS: Product[] = [
     line: "Linha Awning",
     tagline: "Ventilação contínua, mesmo com chuva.",
     description:
-      "A janela projetante que ventila sem expor o interior. Abertura superior de 15° com braço articulado em aço inox, acionamento por manivela ou motor com sensor de chuva, tela mosquiteira integrada e desempenho acústico certificado para dormitórios e banheiros.",
-    image: IMG_MAXIM_AIR,
-    specs: [
-      { label: "Abertura", value: "Projetante 15°" },
-      { label: "Largura do perfil", value: "40 mm" },
-      { label: "Vidro", value: "8 – 16 mm" },
-      { label: "Acionamento", value: "Manivela ou motor" },
-      { label: "Tela mosquiteira", value: "Integrada" },
-      { label: "Desempenho acústico", value: "Rw 32 dB" },
-    ],
+      "A janela projetante que ventila sem expor o interior. Abertura superior de 15° com braço articulado em inox, acionamento por manivela ou motor com sensor de chuva e tela mosquiteira integrada.",
+    drawing: "awning",
+    sheet: {
+      dimensions: [
+        { label: "Módulos (L × A)", value: "400 – 1.600 × 400 – 1.200 mm" },
+        { label: "Ângulo de abertura", value: "15°" },
+        { label: "Largura do perfil", value: "40 mm" },
+        { label: "Vidro", value: "8 – 16 mm" },
+        { label: "Projeção externa", value: "290 mm" },
+      ],
+      materials: [
+        { label: "Perfil", value: "Alumínio liga 6063-T5" },
+        { label: "Braço articulado", value: "Aço inox AISI 304" },
+        { label: "Tela mosquiteira", value: "Fibra de vidro" },
+        { label: "Vedação", value: "EPDM coextrudado" },
+      ],
+      accessories: [
+        { label: "Acionamento", value: "Manivela ou motor 24 V" },
+        { label: "Sensor", value: "Chuva e vento (motor)" },
+        { label: "Tela mosquiteira", value: "Integrada, removível" },
+        { label: "Limitador", value: "Abertura regulável" },
+        { label: "Dreno", value: "Câmara de descompressão" },
+      ],
+      performance: [
+        { label: "Estanqueidade à água", value: "Classe A4" },
+        { label: "Isolamento acústico", value: "Rw 32 dB" },
+        { label: "Vazão de ventilação", value: "28 m³/h (aberta)" },
+        { label: "Resistência ao vento", value: "1.800 Pa" },
+        { label: "Garantia", value: "10 anos" },
+      ],
+    },
     colors: [
       { name: "Branco Polar", hex: "#e8e6e0" },
       { name: "Preto Ônix", hex: "#17181a" },
@@ -140,16 +208,38 @@ export const PRODUCTS: Product[] = [
     line: "Linha Curtain Wall",
     tagline: "Fachada inteira de vidro com montantes de 90 mm.",
     description:
-      "O sistema de fachada para projetos que querem emoldurar a paisagem. Montantes estruturais de 90 mm com fixação oculta, módulos de até 3,6 m, vidro duplo low-e e engenharia de dilatação que absorve movimentos da estrutura sem trincar um milímetro de vidro.",
-    image: IMG_GLAZE_FACADE,
-    specs: [
-      { label: "Montante", value: "90 mm" },
-      { label: "Módulo máximo", value: "3,60 m" },
-      { label: "Vidro", value: "Duplo low-e" },
-      { label: "U-value", value: "1,8 W/m²K" },
-      { label: "Fixação", value: "Estrutural oculta" },
-      { label: "Resistência a vento", value: "160 km/h" },
-    ],
+      "O sistema de fachada para projetos que emolduram a paisagem. Montantes estruturais com fixação oculta, módulos de até 3,6 m, vidro duplo low-e e engenharia de dilatação que absorve movimentos da estrutura.",
+    drawing: "facade",
+    sheet: {
+      dimensions: [
+        { label: "Montante / travessa", value: "90 mm" },
+        { label: "Módulo máximo", value: "3.600 × 1.800 mm" },
+        { label: "Vidro duplo", value: "28 – 44 mm" },
+        { label: "Profundidade estrutural", value: "90 – 210 mm" },
+        { label: "Junta de dilatação", value: "± 12 mm" },
+      ],
+      materials: [
+        { label: "Perfil estrutural", value: "Alumínio 6061-T6" },
+        { label: "Vidro", value: "Duplo low-e temperado" },
+        { label: "Selante estrutural", value: "Silicone neutro" },
+        { label: "Âncoras", value: "Inox ajustável 3D" },
+        { label: "Juntas", value: "EPDM + fita butílica" },
+      ],
+      accessories: [
+        { label: "Fixação", value: "Estrutural oculta" },
+        { label: "Drenagem", value: "Interna em cascata" },
+        { label: "Placas de dilatação", value: "Inclusas" },
+        { label: "Quebra-sol", value: "Compatível (brise)" },
+        { label: "Manutenção", value: "Painéis removíveis" },
+      ],
+      performance: [
+        { label: "Transmitância térmica", value: "U 1,8 W/m²K" },
+        { label: "Resistência ao vento", value: "160 km/h" },
+        { label: "Estanqueidade", value: "Classe E900" },
+        { label: "Fator solar", value: "g 0,38 (low-e)" },
+        { label: "Garantia", value: "10 anos" },
+      ],
+    },
     colors: [
       { name: "Preto Ônix", hex: "#17181a" },
       { name: "Cinza Grafite", hex: "#4a4f54" },

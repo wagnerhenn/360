@@ -1,0 +1,45 @@
+name: CI — ALUMIA Showroom 360
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Política de merge: configurar no GitHub (Settings > Branches):
+# - Require a pull request before merging
+# - Require approvals: 2 (mínimo 2 revisores humanos)
+# - Require status checks to pass: typecheck, unit-tests, build
+
+jobs:
+  quality:
+    name: Lint de tipos, testes unitários e build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Checagem de tipos (TypeScript)
+        run: npm run typecheck
+
+      - name: Testes unitários (Vitest)
+        run: npx vitest run
+
+      - name: Build de produção
+        run: npm run build
+
+      - name: Publicar artefato (dist)
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 14

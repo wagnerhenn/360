@@ -197,4 +197,45 @@ body {
   .hotspot-core {
     transition: none;
   }
+  .draw-anim {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .skip-link {
+    transition: none;
+  }
+}
+
+/* ---------- acessibilidade e desenho técnico ---------- */
+:focus-visible {
+  outline: 2px solid var(--color-bronze-400);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  top: -64px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 18px;
+  background: var(--color-bronze-500);
+  color: var(--color-ink-950);
+  font-family: var(--font-hud);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  transition: top 0.25s ease;
+}
+.skip-link:focus-visible {
+  top: 12px;
+}
+
+/* traçado animado das ilustrações técnicas (blueprint) */
+.draw-anim {
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  animation: draw-line 1.5s cubic-bezier(0.6, 0, 0.3, 1) forwards;
+}
+@keyframes draw-line {
+  to { stroke-dashoffset: 0; }
 }
