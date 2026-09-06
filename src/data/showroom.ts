@@ -1,16 +1,15 @@
 /* ------------------------------------------------------------------ */
 /*  ALUMIA — dados do showroom virtual 360°                            */
-/*  v2: fichas técnicas completas + panoramas com luz neutra           */
 /* ------------------------------------------------------------------ */
-
-export type DrawingKind = "slide" | "pivot" | "awning" | "facade";
 
 export interface SpecRow {
   label: string;
   value: string;
 }
 
-export interface TechSheet {
+export type DrawingKind = "slide" | "pivot" | "awning" | "facade";
+
+export interface ProductSheet {
   dimensions: SpecRow[];
   materials: SpecRow[];
   accessories: SpecRow[];
@@ -24,12 +23,15 @@ export interface ProductColor {
 
 export interface Product {
   id: string;
+  sku: string;
   name: string;
   line: string;
   tagline: string;
   description: string;
+  /** Identificador do desenho técnico vetorial (ProductDrawing). */
   drawing: DrawingKind;
-  sheet: TechSheet;
+  /** Ficha técnica completa — painel, PDF e catálogo. */
+  sheet: ProductSheet;
   colors: ProductColor[];
 }
 
@@ -54,56 +56,54 @@ export interface Scene {
   hotspots: Hotspot[];
 }
 
-/* --------------------- panoramas (luz neutra) ---------------------- */
+/* ------------------- panoramas 360° — masters v2 --------------------- */
+/* Iluminação neutra e uniforme, sem graduação cinematográfica.           */
+/* Master final de produção: EXR 7680×3840 (ver docs/ASSETS.md).          */
 
 export const PANO_LIVING =
-  "https://image.qwenlm.ai/generated-images/7a0c2ae6-a204-4166-a827-e00872d2f284/_result.png";
+  "https://image.qwenlm.ai/generated-images/1d52a034-bc08-4192-a7b5-9cfea54c199c/_result.png";
 export const PANO_GALLERY =
-  "https://image.qwenlm.ai/generated-images/2664b7bb-2cc7-47ec-93cf-72a757972945/_result.png";
+  "https://image.qwenlm.ai/generated-images/34e20fee-10a8-4a80-94eb-cce8a539e26f/_result.png";
 export const PANO_OFFICE =
-  "https://image.qwenlm.ai/generated-images/a0e274c0-4c65-495b-b80d-9e301f636519/_result.png";
+  "https://image.qwenlm.ai/generated-images/5088e4af-d99a-476b-81d8-1b2c7373cad7/_result.png";
 
-/* --------------------- fichas técnicas (produtos) ------------------- */
+/* ----------------------------- produtos ---------------------------- */
 
 export const PRODUCTS: Product[] = [
   {
     id: "prime-slide",
+    sku: "ALM-PS62",
     name: "Prime Slide 62",
     line: "Linha Sliding",
     tagline: "Vão livre de até 6 metros com perfis de apenas 62 mm.",
     description:
-      "A correr minimalista que desaparece na arquitetura. Rolamentos duplos de deslizamento silencioso, trilho inferior embutido no piso e encontro central de 22 mm que praticamente some entre os vidros.",
+      "A correr minimalista que desaparece na arquitetura. Rolamentos duplos de deslizamento silencioso, trilho inferior embutido no piso e encontro central de 22 mm que praticamente some entre os vidros. Pensada para integrar living, varanda e jardim num único plano de luz.",
     drawing: "slide",
     sheet: {
       dimensions: [
-        { label: "Vão máximo", value: "6.000 mm" },
-        { label: "Altura máxima da folha", value: "3.000 mm" },
-        { label: "Largura da folha", value: "800 – 3.000 mm" },
+        { label: "Vão máximo (L × A)", value: "6000 × 3000 mm" },
         { label: "Largura do perfil", value: "62 mm" },
-        { label: "Vidro (simples / duplo)", value: "8 – 28 mm" },
-        { label: "Trilho inferior", value: "Embutido, 40 mm" },
-      ],
-      materials: [
-        { label: "Perfil", value: "Alumínio liga 6063-T5" },
-        { label: "Pintura", value: "Pó poliéster Qualicoat Classe 2" },
-        { label: "Roldanas", value: "Duplas, nylon + aço inox" },
-        { label: "Trilho de rodagem", value: "Aço inox AISI 316" },
+        { label: "Encontro central", value: "22 mm" },
+        { label: "Espessura de vidro", value: "8 – 28 mm (simples ou duplo)" },
         { label: "Peso máximo por folha", value: "160 kg" },
       ],
+      materials: [
+        { label: "Perfil", value: "Alumínio estrutural liga 6063-T5" },
+        { label: "Pintura", value: "Eletrostática Qualicoat Classe 2 (70 µm)" },
+        { label: "Vedações", value: "EPDM coextrusado, cantos vulcanizados" },
+        { label: "Rodízios", value: "Duplos em POM com eixo inox 304" },
+      ],
       accessories: [
-        { label: "Fechadura", value: "Multiponto com chave" },
-        { label: "Puxador", value: "Embutido, alumínio maciço" },
-        { label: "Vedação", value: "Escova dupla + EPDM" },
-        { label: "Segurança infantil", value: "Trava opcional" },
-        { label: "Fechamento", value: "Amortecedor soft-close" },
+        { label: "Trilho inferior", value: "Embutido no piso com capa niveladora" },
+        { label: "Fechadura", value: "Gancho multiponto com chave mestra" },
+        { label: "Amortecimento", value: "Soft-close de fim de curso nas duas folhas" },
+        { label: "Automação", value: "Motorização opcional com app e sensor" },
       ],
       performance: [
-        { label: "Estanqueidade à água", value: "Classe A5" },
-        { label: "Resistência ao vento", value: "2.400 Pa" },
-        { label: "Isolamento acústico", value: "Rw 38 dB" },
-        { label: "Transmitância térmica", value: "U 2,1 W/m²K" },
-        { label: "Ciclos testados", value: "100.000 aberturas" },
-        { label: "Garantia", value: "10 anos" },
+        { label: "Estanqueidade à água", value: "Classe A5 (NBR 10821)" },
+        { label: "Resistência a vento", value: "Classe C5 — 160 km/h" },
+        { label: "Isolamento acústico", value: "Rw 34 dB" },
+        { label: "Transmitância do quadro", value: "Uf 2,9 W/m²K" },
       ],
     },
     colors: [
@@ -115,40 +115,38 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "pivot-axis",
+    sku: "ALM-PA120",
     name: "Pivot Axis 120",
     line: "Linha Entry",
     tagline: "Porta pivotante de 120 cm com eixo totalmente oculto.",
     description:
-      "Uma entrada monumental que gira sobre o próprio peso. Eixo embutido com mola hidráulica de piso, núcleo termoisolante e fechadura biométrica opcional integrada ao puxador maciço.",
+      "Uma entrada monumental que gira sobre o próprio peso. O eixo pivotante embutido permite folhas de até 3,2 m de altura com abertura suave de um toque, núcleo termoisolante e opção de fechadura biométrica integrada ao puxador em alumínio maciço.",
     drawing: "pivot",
     sheet: {
       dimensions: [
-        { label: "Largura da folha", value: "1.200 mm" },
-        { label: "Altura máxima", value: "3.200 mm" },
-        { label: "Espessura da folha", value: "82 mm" },
-        { label: "Offset do eixo", value: "180 mm" },
-        { label: "Vão de passagem", value: "1.020 mm" },
+        { label: "Dimensão da folha", value: "1200 × 3200 mm" },
+        { label: "Espessura da folha", value: "85 mm" },
+        { label: "Ângulo de giro", value: "100°" },
+        { label: "Peso máximo da folha", value: "300 kg" },
+        { label: "Folga de instalação", value: "± 5 mm regulável" },
       ],
       materials: [
-        { label: "Perfil", value: "Alumínio extrudado 6060-T66" },
-        { label: "Núcleo", value: "Poliuretano termoisolante" },
-        { label: "Acabamento", value: "Anodizado 20 mícrons" },
-        { label: "Soleira", value: "Aço inox escovado" },
-        { label: "Revestimento", value: "Chapa 3 mm texturizada" },
+        { label: "Estrutura", value: "Alumínio 6063-T5 com núcleo PU termoisolante" },
+        { label: "Soleira", value: "Inox 316 escovado, drenagem oculta" },
+        { label: "Pintura", value: "Eletrostática Qualicoat Classe 2" },
+        { label: "Revestimento", value: "Chapa contínua sem emendas visíveis" },
       ],
       accessories: [
-        { label: "Puxador", value: "Maciço 800 mm" },
-        { label: "Fechadura", value: "Biométrica opcional" },
-        { label: "Mola", value: "Hidráulica de piso" },
-        { label: "Visor", value: "Olho mágico digital" },
-        { label: "Batente", value: "Magnético oculto" },
+        { label: "Eixo", value: "Pivotante oculto, regulável 0 – 300 kg" },
+        { label: "Puxador", value: "Barra maciça 1200 mm integrada à fechadura" },
+        { label: "Fechadura", value: "Biométrica opcional, bateria de 12 meses" },
+        { label: "Batente", value: "Magnético com ajuste de pressão" },
       ],
       performance: [
-        { label: "Transmitância térmica", value: "U 1,4 W/m²K" },
-        { label: "Isolamento acústico", value: "Rw 42 dB" },
-        { label: "Segurança antiefração", value: "Classe RC3" },
-        { label: "Esforço de abertura", value: "< 30 N" },
-        { label: "Garantia", value: "10 anos" },
+        { label: "Resistência a vento", value: "Classe C3 (NBR 10821)" },
+        { label: "Isolamento acústico", value: "Rw 38 dB" },
+        { label: "Transmitância da porta", value: "Ud 1,6 W/m²K" },
+        { label: "Durabilidade", value: "200.000 ciclos certificados" },
       ],
     },
     colors: [
@@ -160,39 +158,38 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "maxim-air",
+    sku: "ALM-MA40",
     name: "Maxim-Air 40",
     line: "Linha Awning",
     tagline: "Ventilação contínua, mesmo com chuva.",
     description:
-      "A janela projetante que ventila sem expor o interior. Abertura superior de 15° com braço articulado em inox, acionamento por manivela ou motor com sensor de chuva e tela mosquiteira integrada.",
+      "A janela projetante que ventila sem expor o interior. Abertura superior de 15° com braço articulado em aço inox, acionamento por manivela ou motor com sensor de chuva, tela mosquiteira integrada e desempenho acústico certificado para dormitórios e banheiros.",
     drawing: "awning",
     sheet: {
       dimensions: [
-        { label: "Módulos (L × A)", value: "400 – 1.600 × 400 – 1.200 mm" },
-        { label: "Ângulo de abertura", value: "15°" },
+        { label: "Módulo (L)", value: "400 – 1600 mm" },
+        { label: "Altura do módulo", value: "até 1200 mm" },
         { label: "Largura do perfil", value: "40 mm" },
-        { label: "Vidro", value: "8 – 16 mm" },
-        { label: "Projeção externa", value: "290 mm" },
+        { label: "Espessura de vidro", value: "8 – 16 mm" },
+        { label: "Ângulo de abertura", value: "15° (limitador mecânico)" },
       ],
       materials: [
-        { label: "Perfil", value: "Alumínio liga 6063-T5" },
-        { label: "Braço articulado", value: "Aço inox AISI 304" },
-        { label: "Tela mosquiteira", value: "Fibra de vidro" },
-        { label: "Vedação", value: "EPDM coextrudado" },
+        { label: "Perfil", value: "Alumínio estrutural liga 6063-T5" },
+        { label: "Braço articulado", value: "Aço inox 304, 50.000 ciclos testados" },
+        { label: "Tela", value: "Fibra de vidro 18×16 cinza" },
+        { label: "Vedações", value: "EPDM com dupla barreira" },
       ],
       accessories: [
-        { label: "Acionamento", value: "Manivela ou motor 24 V" },
-        { label: "Sensor", value: "Chuva e vento (motor)" },
-        { label: "Tela mosquiteira", value: "Integrada, removível" },
-        { label: "Limitador", value: "Abertura regulável" },
-        { label: "Dreno", value: "Câmara de descompressão" },
+        { label: "Acionamento", value: "Manivela destacável ou motor 24 V" },
+        { label: "Sensor de chuva", value: "Fechamento automático (versão motor)" },
+        { label: "Tela mosquiteira", value: "Integrada ao marco, removível" },
+        { label: "Trava de segurança", value: "Limitador de abertura para crianças" },
       ],
       performance: [
-        { label: "Estanqueidade à água", value: "Classe A4" },
+        { label: "Estanqueidade à água", value: "Classe A4 (NBR 10821)" },
         { label: "Isolamento acústico", value: "Rw 32 dB" },
-        { label: "Vazão de ventilação", value: "28 m³/h (aberta)" },
-        { label: "Resistência ao vento", value: "1.800 Pa" },
-        { label: "Garantia", value: "10 anos" },
+        { label: "Resistência a vento", value: "Classe C2" },
+        { label: "Vazão de ventilação", value: "68 m³/h por módulo" },
       ],
     },
     colors: [
@@ -204,40 +201,37 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "glaze-facade",
+    sku: "ALM-GF90",
     name: "Glaze Facade 90",
     line: "Linha Curtain Wall",
     tagline: "Fachada inteira de vidro com montantes de 90 mm.",
     description:
-      "O sistema de fachada para projetos que emolduram a paisagem. Montantes estruturais com fixação oculta, módulos de até 3,6 m, vidro duplo low-e e engenharia de dilatação que absorve movimentos da estrutura.",
+      "O sistema de fachada para projetos que querem emoldurar a paisagem. Montantes estruturais de 90 mm com fixação oculta, módulos de até 3,6 m, vidro duplo low-e e engenharia de dilatação que absorve movimentos da estrutura sem trincar um milímetro de vidro.",
     drawing: "facade",
     sheet: {
       dimensions: [
+        { label: "Módulo máximo (L × A)", value: "3600 × 1800 mm" },
         { label: "Montante / travessa", value: "90 mm" },
-        { label: "Módulo máximo", value: "3.600 × 1.800 mm" },
-        { label: "Vidro duplo", value: "28 – 44 mm" },
-        { label: "Profundidade estrutural", value: "90 – 210 mm" },
-        { label: "Junta de dilatação", value: "± 12 mm" },
+        { label: "Vidro duplo", value: "24 – 44 mm" },
+        { label: "Movimentação estrutural", value: "± 30 mm por junta" },
       ],
       materials: [
-        { label: "Perfil estrutural", value: "Alumínio 6061-T6" },
-        { label: "Vidro", value: "Duplo low-e temperado" },
-        { label: "Selante estrutural", value: "Silicone neutro" },
-        { label: "Âncoras", value: "Inox ajustável 3D" },
-        { label: "Juntas", value: "EPDM + fita butílica" },
+        { label: "Perfil", value: "Alumínio estrutural liga 6063-T6" },
+        { label: "Colagem estrutural", value: "Silicone estrutural bi-componente" },
+        { label: "Vidro", value: "Duplo low-e com argônio, camada 2" },
+        { label: "Juntas", value: "EPDM celular + fita butílica" },
       ],
       accessories: [
-        { label: "Fixação", value: "Estrutural oculta" },
-        { label: "Drenagem", value: "Interna em cascata" },
-        { label: "Placas de dilatação", value: "Inclusas" },
-        { label: "Quebra-sol", value: "Compatível (brise)" },
-        { label: "Manutenção", value: "Painéis removíveis" },
+        { label: "Fixação", value: "Estrutural oculta, sem capa externa" },
+        { label: "Junta de dilatação", value: "Articulada com pintura contínua" },
+        { label: "Drenagem", value: "Câmara de descompressão com dreno invisível" },
+        { label: "Manutenção", value: "Porta de inspeção por módulo técnico" },
       ],
       performance: [
-        { label: "Transmitância térmica", value: "U 1,8 W/m²K" },
-        { label: "Resistência ao vento", value: "160 km/h" },
-        { label: "Estanqueidade", value: "Classe E900" },
-        { label: "Fator solar", value: "g 0,38 (low-e)" },
-        { label: "Garantia", value: "10 anos" },
+        { label: "Transmitância térmica", value: "U-value 1,8 W/m²K" },
+        { label: "Resistência a vento", value: "160 km/h (ensaio em câmara)" },
+        { label: "Estanqueidade à água", value: "Classe E1200 (1200 Pa)" },
+        { label: "Fator solar do conjunto", value: "FS 0,34 com low-e" },
       ],
     },
     colors: [
@@ -308,6 +302,10 @@ export function getProduct(id: string): Product | undefined {
 
 export function findSceneByProduct(productId: string): Scene | undefined {
   return SCENES.find((s) => s.hotspots.some((h) => h.productId === productId));
+}
+
+export function getScene(id: string): Scene | undefined {
+  return SCENES.find((s) => s.id === id);
 }
 
 /* ----------------------------- conteúdo ---------------------------- */

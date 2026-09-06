@@ -1,26 +1,21 @@
-name: CI — ALUMIA Showroom 360
+name: CI
 
 on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
 
-# Política de merge: configurar no GitHub (Settings > Branches):
-# - Require a pull request before merging
-# - Require approvals: 2 (mínimo 2 revisores humanos)
-# - Require status checks to pass: typecheck, unit-tests, build
+# Política do repositório: merge em `main` exige status verde deste workflow
+# + 2 aprovações humanas (Code Reviewer e QA) via branch protection.
 
 jobs:
   quality:
-    name: Lint de tipos, testes unitários e build
+    name: Lint · Tipos · Testes · Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
@@ -28,18 +23,42 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
-      - name: Checagem de tipos (TypeScript)
-        run: npm run typecheck
+      - name: ESLint
+        run: npx eslint .
+
+      - name: TypeScript (typecheck)
+        run: npx tsc --noEmit
 
       - name: Testes unitários (Vitest)
-        run: npx vitest run
+        run: npx vitest run --reporter=verbose
 
       - name: Build de produção
         run: npm run build
 
-      - name: Publicar artefato (dist)
+      - name: Publicar artefato dist/
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-${{ github.sha }}
           path: dist
           retention-days: 14
+
+  lighthouse:
+    name: Lighthouse (performance e acessibilidade)
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Auditoria Lighthouse CI
+        uses: treosh/lighthouse-ci-action@12.1.0
+        with:
+          configPath: ./.lighthouserc.json
+          uploadArtifacts: true

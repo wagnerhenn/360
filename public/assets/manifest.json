@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json.schemastore.org/base.json",
+  "project": "ALUMIA — Showroom Virtual 360°",
+  "policy": "assets raster devem ter origem real (foto de estúdio ou render PBR tradicional) com EXIF preservado e declaração assinada em public/assets/origens/ antes do status 'aprovado-legal'. IA generativa é proibida em produção.",
+  "updatedAt": "2026-02-10",
+  "assets": [
+    {
+      "id": "pano-living",
+      "kind": "panorama-360",
+      "use": "Cena 01 — Living Panorâmico",
+      "currentUrl": "https://image.qwenlm.ai/generated-images/1d52a034-bc08-4192-a7b5-9cfea54c199c/_result.png",
+      "origin": "sintetico-ia",
+      "status": "substituir-antes-do-lancamento",
+      "requiredMaster": "masters/pano-living-8k.exr (7680x3840, EXR 16-bit half)",
+      "requiredExports": ["pano-living-4k.webp (3840x1920 q82)", "pano-living-2k.webp (2048x1024 q78)"],
+      "declarationFile": null,
+      "sha256": null
+    },
+    {
+      "id": "pano-gallery",
+      "kind": "panorama-360",
+      "use": "Cena 02 — Galeria de Esquadrias",
+      "currentUrl": "https://image.qwenlm.ai/generated-images/34e20fee-10a8-4a80-94eb-cce8a539e26f/_result.png",
+      "origin": "sintetico-ia",
+      "status": "substituir-antes-do-lancamento",
+      "requiredMaster": "masters/pano-gallery-8k.exr (7680x3840, EXR 16-bit half)",
+      "requiredExports": ["pano-gallery-4k.webp (3840x1920 q82)", "pano-gallery-2k.webp (2048x1024 q78)"],
+      "declarationFile": null,
+      "sha256": null
+    },
+    {
+      "id": "pano-office",
+      "kind": "panorama-360",
+      "use": "Cena 03 — Home Office Vista Verde",
+      "currentUrl": "https://image.qwenlm.ai/generated-images/5088e4af-d99a-476b-81d8-1b2c7373cad7/_result.png",
+      "origin": "sintetico-ia",
+      "status": "substituir-antes-do-lancamento",
+      "requiredMaster": "masters/pano-office-8k.exr (7680x3840, EXR 16-bit half)",
+      "requiredExports": ["pano-office-4k.webp (3840x1920 q82)", "pano-office-2k.webp (2048x1024 q78)"],
+      "declarationFile": null,
+      "sha256": null
+    }
+  ],
+  "productVisuals": {
+    "note": "O catálogo e as fichas usam desenhos técnicos vetoriais autorais (SVG, ProductDrawing.tsx) — sem imagem raster, conformes à política. Fotos de estúdio/PBR são opcionais e, se incluídas, exigem EXIF + declaração assinada.",
+    "items": [
+      { "productId": "prime-slide", "drawing": "slide", "photo": null },
+      { "productId": "pivot-axis", "drawing": "pivot", "photo": null },
+      { "productId": "maxim-air", "drawing": "awning", "photo": null },
+      { "productId": "glaze-facade", "drawing": "facade", "photo": null }
+    ]
+  }
+}

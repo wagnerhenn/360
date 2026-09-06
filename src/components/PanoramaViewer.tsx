@@ -40,11 +40,13 @@ function toVector(lon: number, lat: number, radius: number, out: THREE.Vector3) 
 function CtrlBtn({
   label,
   active = false,
+  pressed,
   onClick,
   children,
 }: {
   label: string;
   active?: boolean;
+  pressed?: boolean;
   onClick: () => void;
   children: ReactNode;
 }) {
@@ -53,6 +55,7 @@ function CtrlBtn({
       type="button"
       title={label}
       aria-label={label}
+      aria-pressed={pressed}
       onClick={onClick}
       className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-200 ${
         active
@@ -169,7 +172,13 @@ export default function PanoramaViewer({
       else if (e.key === "ArrowDown") v.tLat = clamp(v.tLat - 3, -80, 80);
       else if (e.key === "+" || e.key === "=") v.tFov = clamp(v.tFov - 5, 40, 100);
       else if (e.key === "-") v.tFov = clamp(v.tFov + 5, 40, 100);
-      else return;
+      else if (e.key === "r" || e.key === "R") {
+        resetView();
+        return;
+      } else if (e.key === "f" || e.key === "F") {
+        toggleFull();
+        return;
+      } else return;
       v.lastInteract = performance.now();
     };
     window.addEventListener("keydown", onKeyDown);
@@ -538,7 +547,12 @@ export default function PanoramaViewer({
           <IconPlus className="text-sm" />
         </CtrlBtn>
         <span className="mx-1 h-5 w-px bg-line" />
-        <CtrlBtn label="Rotação automática" active={autoRotate} onClick={toggleAutoRotate}>
+        <CtrlBtn
+          label="Rotação automática"
+          active={autoRotate}
+          pressed={autoRotate}
+          onClick={toggleAutoRotate}
+        >
           <IconRotate className="text-sm" />
         </CtrlBtn>
         <CtrlBtn label="Recentralizar vista" onClick={resetView}>
