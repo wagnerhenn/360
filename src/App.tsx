@@ -1,5 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
+  CONTACT,
   findSceneByProduct,
   getProduct,
   SCENES,
@@ -19,7 +20,7 @@ import {
   StatsSection,
   VisitSection,
 } from "./components/Sections";
-import { IconLogo } from "./components/icons";
+import { IconLogo, IconWhatsApp } from "./components/icons";
 
 /* Viewer carregado sob demanda: separa o Three.js do bundle inicial,
    melhorando FCP/LCP no mobile (lazy loading do motor 3D e das cenas). */
@@ -212,6 +213,18 @@ export default function App() {
         productName={quoteProduct}
         onClose={() => setQuoteOpen(false)}
       />
+
+      {/* Botão flutuante de WhatsApp (estilo TOSTEM) */}
+      <a
+        href={CONTACT.whatsappUrl}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Falar com especialista no WhatsApp"
+        className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_8px_30px_rgba(37,211,102,0.45)] transition-transform duration-200 hover:scale-110 md:bottom-8 md:right-8"
+        onClick={() => track("whatsapp_float_click")}
+      >
+        <IconWhatsApp className="text-2xl" />
+      </a>
     </div>
   );
 }

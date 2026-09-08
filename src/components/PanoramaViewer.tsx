@@ -10,6 +10,7 @@ import {
   IconPlus,
   IconReset,
   IconRotate,
+  IconWhatsApp,
 } from "./icons";
 
 /* ------------------------------------------------------------------ */
@@ -572,6 +573,25 @@ export default function PanoramaViewer({
           </span>
         </div>
       )}
+
+      {/* barra superior com WhatsApp (estilo TOSTEM) */}
+      <div className="absolute left-0 right-0 top-0 z-30 flex items-center justify-between px-4 py-3 md:px-8 md:py-4">
+        <div className="flex items-center gap-2.5 rounded-full border border-line bg-ink-950/70 px-4 py-2 backdrop-blur-sm">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-bronze-400" />
+          <span className="font-hud text-[10px] uppercase tracking-[0.22em] text-paper/85">
+            Tour ao vivo
+          </span>
+        </div>
+        <a
+          href="https://wa.me/5511999990360?text=Olá!%20Visitei%20o%20showroom%20virtual%20da%20ALUMIA%20e%20gostaria%20de%20um%20orçamento."
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 font-hud text-[10px] uppercase tracking-[0.18em] text-white shadow-[0_4px_20px_rgba(37,211,102,0.4)] transition-transform duration-200 hover:scale-105"
+        >
+          <IconWhatsApp className="text-sm" />
+          <span className="hidden sm:inline">Fale conosco</span>
+        </a>
+      </div>
 
       {/* cortina de transição entre ambientes */}
       <div

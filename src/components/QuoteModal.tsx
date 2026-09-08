@@ -163,6 +163,72 @@ export default function QuoteModal({ open, productName, onClose }: QuoteModalPro
                   <option value="Visita técnica">Ainda n&atilde;o sei — quero uma visita t&eacute;cnica</option>
                 </select>
               </div>
+              <div>
+                <label htmlFor="q-estado" className={labelCls}>
+                  Estado*
+                </label>
+                <select id="q-estado" name="estado" required className={inputCls}>
+                  <option value="">Selecione</option>
+                  <option value="AC">Acre</option>
+                  <option value="AL">Alagoas</option>
+                  <option value="AP">Amapá</option>
+                  <option value="AM">Amazonas</option>
+                  <option value="BA">Bahia</option>
+                  <option value="CE">Ceará</option>
+                  <option value="DF">Distrito Federal</option>
+                  <option value="ES">Espírito Santo</option>
+                  <option value="GO">Goiás</option>
+                  <option value="MA">Maranhão</option>
+                  <option value="MT">Mato Grosso</option>
+                  <option value="MS">Mato Grosso do Sul</option>
+                  <option value="MG">Minas Gerais</option>
+                  <option value="PA">Pará</option>
+                  <option value="PB">Paraíba</option>
+                  <option value="PR">Paraná</option>
+                  <option value="PE">Pernambuco</option>
+                  <option value="PI">Piauí</option>
+                  <option value="RJ">Rio de Janeiro</option>
+                  <option value="RN">Rio Grande do Norte</option>
+                  <option value="RS">Rio Grande do Sul</option>
+                  <option value="RO">Rondônia</option>
+                  <option value="RR">Roraima</option>
+                  <option value="SC">Santa Catarina</option>
+                  <option value="SP">São Paulo</option>
+                  <option value="SE">Sergipe</option>
+                  <option value="TO">Tocantins</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="q-cidade" className={labelCls}>
+                  Cidade*
+                </label>
+                <input id="q-cidade" name="cidade" required placeholder="São Paulo" className={inputCls} />
+              </div>
+              <div>
+                <label htmlFor="q-tipo" className={labelCls}>
+                  Você é*
+                </label>
+                <select id="q-tipo" name="tipo" required className={inputCls}>
+                  <option value="">Selecione</option>
+                  <option value="Proprietário">Proprietário</option>
+                  <option value="Arquiteto(a)">Arquiteto(a)</option>
+                  <option value="Empreiteiro(a)">Empreiteiro(a)</option>
+                  <option value="Incorporador(a)">Incorporador(a)</option>
+                  <option value="Engenheiro(a)">Engenheiro(a)</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="q-projeto" className={labelCls}>
+                  Tipo de projeto*
+                </label>
+                <select id="q-projeto" name="projeto" required className={inputCls}>
+                  <option value="">Selecione</option>
+                  <option value="Nova construção">Nova construção</option>
+                  <option value="Reforma">Reforma</option>
+                  <option value="Ampliação">Ampliação</option>
+                  <option value="Comercial">Comercial</option>
+                </select>
+              </div>
               <div className="sm:col-span-2">
                 <label htmlFor="q-msg" className={labelCls}>
                   Mensagem
