@@ -1,0 +1,241 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --font-body: "Manrope", "Segoe UI", ui-sans-serif, sans-serif;
+  --font-hud: "Space Mono", ui-monospace, "Courier New", monospace;
+
+  --color-ink-950: #0a0d0f;
+  --color-ink-900: #0f1316;
+  --color-ink-800: #151b1f;
+  --color-ink-700: #1d2429;
+  --color-ink-600: #273036;
+  --color-line: rgba(237, 234, 226, 0.14);
+  --color-paper: #edeae2;
+  --color-paper-dim: #9ba1a0;
+  --color-bronze-200: #f3d9b3;
+  --color-bronze-300: #e9c48f;
+  --color-bronze-400: #dda968;
+  --color-bronze-500: #cd914b;
+  --color-bronze-600: #b1783a;
+  --color-bronze-700: #8a5c2b;
+
+  --animate-marquee: marquee 32s linear infinite;
+  --animate-pulse-ring: pulse-ring 2.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  --animate-kenburns: kenburns 18s ease-in-out infinite alternate;
+  --animate-scene-in: scene-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-panel-in: panel-in 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-modal-in: modal-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-fade-in: fade-in 0.4s ease both;
+  --animate-hint: hint-in 6.4s ease both;
+  --animate-bob: bob 2.6s ease-in-out infinite;
+  --animate-route: route-move 1.4s linear infinite;
+  --animate-pin: pin-pulse 2.2s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes pulse-ring {
+  0% { transform: scale(0.55); opacity: 0.9; }
+  75% { transform: scale(2); opacity: 0; }
+  100% { transform: scale(2); opacity: 0; }
+}
+@keyframes kenburns {
+  from { transform: scale(1.02) translate(0, 0); }
+  to { transform: scale(1.12) translate(1.6%, -1.6%); }
+}
+@keyframes scene-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes panel-in {
+  from { opacity: 0; transform: translateX(64px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(26px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes hint-in {
+  0% { opacity: 0; transform: translate(-50%, 10px); }
+  10%, 84% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -8px); }
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes route-move {
+  to { stroke-dashoffset: -28; }
+}
+@keyframes pin-pulse {
+  0% { transform: scale(0.5); opacity: 0.8; }
+  80% { transform: scale(2.1); opacity: 0; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+@keyframes dash-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background-color: var(--color-ink-950);
+  color: var(--color-paper);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+::selection {
+  background: var(--color-bronze-500);
+  color: var(--color-ink-950);
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ink-900);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink-600);
+  border-radius: 8px;
+  border: 2px solid var(--color-ink-900);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-bronze-600);
+}
+
+/* ---------- assinatura visual ---------- */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E");
+}
+.vignette {
+  background: radial-gradient(ellipse at center, transparent 52%, rgba(6, 8, 10, 0.58) 100%);
+}
+.text-outline {
+  -webkit-text-stroke: 1px rgba(237, 234, 226, 0.22);
+  color: transparent;
+}
+
+/* ---------- scroll reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- hotspots 360 ---------- */
+.hotspot-core {
+  transition: transform 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+.hotspot:hover .hotspot-core,
+.hotspot:focus-visible .hotspot-core {
+  transform: scale(1.14);
+}
+.hotspot-pill {
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.hotspot:hover .hotspot-pill,
+.hotspot:focus-visible .hotspot-pill {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.pano-grab {
+  cursor: grab;
+}
+.pano-grab.is-dragging {
+  cursor: grabbing;
+}
+
+.check-draw {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: dash-draw 0.7s 0.15s cubic-bezier(0.6, 0, 0.3, 1) forwards;
+}
+
+/* ---------- movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  [class*="animate-"],
+  .check-draw {
+    animation: none !important;
+  }
+  .check-draw {
+    stroke-dashoffset: 0;
+  }
+  .hotspot-pill,
+  .hotspot-core {
+    transition: none;
+  }
+  .draw-anim {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .skip-link {
+    transition: none;
+  }
+}
+
+/* ---------- acessibilidade e desenho técnico ---------- */
+:focus-visible {
+  outline: 2px solid var(--color-bronze-400);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  top: -64px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 18px;
+  background: var(--color-bronze-500);
+  color: var(--color-ink-950);
+  font-family: var(--font-hud);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  transition: top 0.25s ease;
+}
+.skip-link:focus-visible {
+  top: 12px;
+}
+
+/* traçado animado das ilustrações técnicas (blueprint) */
+.draw-anim {
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  animation: draw-line 1.5s cubic-bezier(0.6, 0, 0.3, 1) forwards;
+}
+@keyframes draw-line {
+  to { stroke-dashoffset: 0; }
+}
